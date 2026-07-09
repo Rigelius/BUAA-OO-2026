@@ -1,0 +1,11 @@
+add_user 1 20 Alice
+add_user 2 22 Bob
+add_user 3 25 Charlie
+follow_user 1 2
+follow_user 2 1
+query_mutual_following_sum
+upload_video 1 101
+watch_video 2 101
+query_received_unwatched_videos 2
+follow_user 2 3
+query_shortest_path 1 3

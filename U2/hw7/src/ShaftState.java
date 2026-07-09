@@ -1,0 +1,5 @@
+public enum ShaftState {
+    NORMAL, REP_ACCEPT, REPAIR, TEST,
+    UP_ACCEPT, UPDATE, DOUBLE,
+    REC_ACCEPT, RECYCLE
+}

@@ -1,0 +1,13 @@
+add_user 1 20 Up
+add_user 2 20 Fan
+follow_user 2 1
+upload_video 1 101
+upload_video 1 102
+upload_video 1 103
+upload_video 1 104
+upload_video 1 105
+upload_video 1 106
+query_received_unwatched_videos 2
+watch_video 2 104
+query_received_unwatched_videos 2
+watch_video 2 999

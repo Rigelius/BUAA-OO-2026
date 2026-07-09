@@ -1,0 +1,3 @@
+0
+0
+dx((x^2+y)^3) + dy(exp((x^2+x*y))) + grad(exp(x+y)) + [(((x+1)^2)==(x^2+2*x+1))?dx(exp(x)):dy(exp(y))]

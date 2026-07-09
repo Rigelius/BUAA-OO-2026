@@ -1,0 +1,19 @@
+add_user 1 60 U1
+add_user 2 50 U2
+add_user 3 50 U3
+add_user 4 40 U4
+add_user 5 30 U5
+add_user 6 20 U6
+follow_user 1 2
+follow_user 2 4
+follow_user 3 4
+follow_user 4 5
+follow_user 5 6
+follow_user 6 1
+queryLongestDecSeq
+query_shortest_path 6 5
+unfollow_user 4 5
+queryLongestDecSeq
+query_mutual_following_sum
+follow_user 2 1
+query_mutual_following_sum

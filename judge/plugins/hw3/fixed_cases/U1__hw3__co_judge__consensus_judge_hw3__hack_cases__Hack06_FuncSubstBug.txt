@@ -1,0 +1,4 @@
+1
+f(x)=exp(x+x^2)
+0
+f(grad(x*y))

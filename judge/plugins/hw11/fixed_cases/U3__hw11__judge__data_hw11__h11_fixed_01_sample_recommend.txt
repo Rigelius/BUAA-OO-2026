@@ -1,0 +1,16 @@
+add_user 1 20 Alice
+add_user 2 22 Bob
+add_user 3 30 Carol
+add_user_coins 2 10
+upload_video 1 101 tech
+upload_video 3 102 game
+watch_video 2 102
+watch_video 2 101
+like_video 2 101
+coin_video 2 101 2
+recommend_video 2
+recommend_Nth_up 2 1
+query_most_influential_up tech
+query_user_profile 2
+queryGlobalBestContributor
+query_most_popular_video tech

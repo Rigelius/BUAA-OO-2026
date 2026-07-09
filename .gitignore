@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Java build outputs
+*.class
+.build/
+.build*/
+build/
+out/
+target/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Local build and smoke-test outputs
+.smoke_out/
+tmp_ui_verify/
+docs/work_report.md
+judge/build/
+judge/**/.build_targets/
+judge/**/.gui_tmp_cases/
+judge/**/out_raw/
+judge/**/problem_cases/
+judge/**/report/
+U2/hw*/.build/
+U2/hw*/.build*/
+U2/hw*/.out/
+U2/hw*/build_test/
+U2/hw*/out_test/
+U2/hw*/smoke_data/
+U2/hw*/smoke_out/
+U2/hw*/test_data/
+
+# Ad-hoc local data
+*.log
+*.tmp
+*.bak
+
+# IDE and OS files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db

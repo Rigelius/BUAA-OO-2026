@@ -1,0 +1,12 @@
+add_user 1 20 A
+add_user 1 21 B
+add_user 2 111 Old
+upload_video 9 100
+upload_video 1 100
+upload_video 1 100
+follow_user 1 1
+follow_user 1 2
+unfollow_user 1 2
+watch_video 2 100
+query_shortest_path 1 2
+query_up_followers_age_ratio 9

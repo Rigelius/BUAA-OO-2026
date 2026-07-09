@@ -1,0 +1,19 @@
+add_user 1 25 UpA
+add_user 2 26 UpB
+add_user 3 27 Fan
+add_user 4 28 Target
+upload_video 1 701 tech
+upload_video 1 702 music
+upload_video 2 703 tech
+upload_video 2 704 comedy
+watch_video 4 701
+watch_video 4 704
+add_user_coins 4 10
+coin_video 4 701 2
+like_video 4 704
+recommend_video 4
+recommend_Nth_up 4 1
+recommend_Nth_up 4 2
+query_most_influential_up tech
+query_most_influential_up comedy
+query_user_profile 4

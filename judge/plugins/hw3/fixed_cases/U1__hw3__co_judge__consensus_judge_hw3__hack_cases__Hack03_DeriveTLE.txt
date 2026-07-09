@@ -1,0 +1,3 @@
+0
+0
+dx(dx(dx(dx(dx(x*x*x*x*x*x*x*x*x*x*x*x*x*x*x*x)))))

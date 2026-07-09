@@ -1,0 +1,14 @@
+add_user 1 20 Up
+add_user 2 21 Fan
+upload_video 1 200 tech
+upload_video 1 201 music
+send_comment 2 200 1 aaaa
+send_comment 2 200 2 baaa
+send_comment 2 200 3 keep
+send_comment 2 200 1 duplicate
+send_comment 9 200 4 bad
+clean_spam_comments 200 aa
+send_comment 2 201 5 abc
+send_comment 2 201 6 a
+clean_spam_comments 201 a
+clean_spam_comments 200 zz

@@ -1,0 +1,16 @@
+add_user 1 40 Up
+add_user 2 30 Mid
+add_user 3 20 Fan
+follow_user 2 1
+follow_user 3 2
+upload_video 1 301 tech
+upload_video 1 302 tech
+query_received_unwatched_videos 2
+watch_video 2 301
+forward_video 2 301 3
+query_received_unwatched_videos 3
+watch_video 3 301
+like_video 3 301
+query_most_popular_video tech
+query_most_popular_video food
+forward_video 1 301 2

@@ -1,0 +1,32 @@
+recommend_video 1
+queryGlobalBestContributor
+query_most_influential_up badtype
+add_user 1 20 A
+recommend_video 1
+recommend_Nth_up 1 1
+recommend_Nth_up 1 0
+add_user 1 21 B
+add_user 2 110 Old
+add_user 2 30 B
+add_user_coins 9 5
+upload_video 9 100 tech
+upload_video 9 101 tech
+upload_video 1 100 tech
+upload_video 1 100 music
+like_video 9 100
+like_video 2 999
+like_video 1 100
+like_video 2 100
+coin_video 2 100 3
+add_user_coins 2 1
+watch_video 2 100
+coin_video 2 100 3
+coin_video 2 100 2
+query_best_contributor 1
+purchase_medal 1 100 1
+purchase_medal 2 999 1
+purchase_medal 2 100 2
+purchase_medal 2 100 1
+clean_spam_comments 999 spam
+query_user_profile 3
+query_most_popular_video tech

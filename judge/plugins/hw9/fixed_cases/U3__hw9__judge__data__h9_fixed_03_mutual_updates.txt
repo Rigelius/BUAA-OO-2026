@@ -1,0 +1,16 @@
+add_user 1 10 U1
+add_user 2 17 U2
+add_user 3 31 U3
+add_user 4 46 U4
+follow_user 1 2
+follow_user 2 1
+follow_user 3 4
+follow_user 4 3
+query_mutual_following_sum
+unfollow_user 2 1
+query_mutual_following_sum
+follow_user 2 1
+query_up_followers_age_ratio 1
+query_shortest_path 3 1
+follow_user 4 1
+query_shortest_path 3 1

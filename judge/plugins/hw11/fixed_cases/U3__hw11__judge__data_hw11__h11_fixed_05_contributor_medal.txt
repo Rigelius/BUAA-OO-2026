@@ -1,0 +1,15 @@
+add_user 1 30 Up
+add_user 2 25 A
+add_user 3 26 B
+add_user_coins 2 10
+add_user_coins 3 10
+upload_video 1 401 game
+watch_video 2 401
+watch_video 3 401
+coin_video 2 401 1
+coin_video 3 401 2
+coin_video 2 401 2
+query_best_contributor 1
+purchase_medal 2 401 3
+purchase_medal 2 401 1
+query_most_popular_video game
