@@ -1,4 +1,4 @@
-"""HW3 · 表达式化简（多变量 · 求导） plugin."""
+"""HW3 表达式化简（多变量求导） plugin."""
 from __future__ import annotations
 
 from PyQt5.QtWidgets import QWidget
@@ -10,6 +10,6 @@ PLUGIN = {
     "hw_id": "hw3",
     "unit": 1,
     "order": 3,
-    "title": "HW3 · 表达式化简（多变量 · 求导）",
+    "title": "HW3 表达式化简（多变量求导）",
     "build_page": _build_page,
 }

@@ -68,8 +68,8 @@ _UNIT_NAMES: Dict[int, str] = {
 
 _HW_SHORT = {
     "hw1":  "基础",
-    "hw2":  "三目 · 函数",
-    "hw3":  "多变量 · 求导",
+    "hw2":  "三目函数",
+    "hw3":  "多变量求导",
     "hw5":  "基础",
     "hw6":  "检修",
     "hw7":  "双轿厢",
@@ -489,7 +489,7 @@ class Launcher(QMainWindow):
         sub = _HW_SHORT.get(pi.hw_id, "")
         status_body = f"{pi.hw_id.upper()}"
         if sub:
-            status_body += f" · {sub}"
+            status_body += f" {sub}"
         self.lbl_status.setText(f"— {status_body}")
         self.setWindowTitle(f"BUAA-OO 统一评测机 — {pi.hw_id.upper()} {sub}".rstrip())
 

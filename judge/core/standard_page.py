@@ -44,6 +44,13 @@ from PyQt5.QtWidgets import (
 )
 
 from judge.core.target_matching import target_name_matches, target_selection_from_text
+from judge.core.models import (
+    aggregate_case_status,
+    compute_score_across_samples,
+    compute_expression_length_score,
+    effective_output_length,
+    target_status_to_case_code,
+)
 from judge.core.ui import (
     DARK_COLORS,
     BadgeLabel,
@@ -87,88 +94,6 @@ class StandardJudgeSpec:
     include_stderr: bool = False
     metric_labels: Tuple[str, ...] = ("Tr", "Ta", "W")
     score_mode: str = "u2"
-
-
-def target_status_to_case_code(status: str) -> str:
-    if status == "PASSED":
-        return "AC"
-    if status in {"TIMEOUT_SOFT", "TIMEOUT_HARD"}:
-        return "TLE"
-    if status in {"RUNTIME_ERROR", "JAVA_ERROR", "EXEC_ERROR"}:
-        return "RE"
-    if status == "INPUT_ERROR":
-        return "IE"
-    if status == "SKIPPED_STOP":
-        return "STOP"
-    return "WA"
-
-
-def aggregate_case_status(targets: Dict[str, Any]) -> str:
-    if not targets:
-        return "IE"
-    codes = [target_status_to_case_code(rr.status) for rr in targets.values()]
-    if all(code == "AC" for code in codes):
-        return "AC"
-    for code in ("IE", "RE", "TLE", "WA", "STOP"):
-        if code in codes:
-            return code
-    return "WA"
-
-
-def compute_r(x: float, x_min: float, x_max: float, x_avg: float, p: float = 0.10) -> float:
-    base_min = p * x_avg + (1 - p) * x_min
-    base_max = p * x_avg + (1 - p) * x_max
-    if base_max <= base_min:
-        return 1.0
-    if x <= base_min:
-        return 1.0
-    if x > base_max:
-        return 0.0
-    return (base_max - x) / (base_max - base_min)
-
-
-def compute_score_across_samples(samples: List[Tuple[float, float, float]]) -> List[float]:
-    if not samples:
-        return []
-    trs = [s[0] for s in samples]
-    tas = [s[1] for s in samples]
-    ws = [s[2] for s in samples]
-
-    tr_min, tr_max, tr_avg = min(trs), max(trs), sum(trs) / len(trs)
-    ta_min, ta_max, ta_avg = min(tas), max(tas), sum(tas) / len(tas)
-    w_min, w_max, w_avg = min(ws), max(ws), sum(ws) / len(ws)
-
-    scores = []
-    for tr, ta, w in samples:
-        r_tr = compute_r(tr, tr_min, tr_max, tr_avg)
-        r_ta = compute_r(ta, ta_min, ta_max, ta_avg)
-        r_w = compute_r(w, w_min, w_max, w_avg)
-        scores.append(15.0 * (0.3 * r_tr + 0.3 * r_ta + 0.4 * r_w))
-    return scores
-
-
-def effective_output_length(text: str) -> int:
-    return len("".join(text.split()))
-
-
-def compute_u1_score(length: int, best_length: int) -> float:
-    if best_length <= 0:
-        return 0.0
-    x = length / best_length
-    if x <= 1:
-        ratio = 1.0
-    elif x <= 1.5:
-        ratio = (
-            -31.8239 * x ** 4
-            + 155.9038 * x ** 3
-            - 279.2180 * x ** 2
-            + 214.0743 * x
-            - 57.9370
-        )
-    else:
-        ratio = 0.0
-    ratio = max(0.0, min(1.0, ratio))
-    return 15.0 * ratio
 
 
 class StandardJudgeWindow(QMainWindow):
@@ -899,7 +824,7 @@ class StandardJudgeWindow(QMainWindow):
     def _compute_case_scores(self, targets_map: Dict[str, Any]) -> Dict[str, float]:
         if not self.spec.show_scores:
             return {}
-        if self.spec.score_mode == "u1_length":
+        if self.spec.score_mode == "expression_length":
             lengths = {
                 k: effective_output_length(v.stdout)
                 for k, v in targets_map.items()
@@ -908,7 +833,7 @@ class StandardJudgeWindow(QMainWindow):
             if not lengths:
                 return {}
             best = min(lengths.values())
-            return {k: compute_u1_score(length, best) for k, length in lengths.items()}
+            return {k: compute_expression_length_score(length, best) for k, length in lengths.items()}
         samples = []
         keys = []
         for k, v in targets_map.items():
@@ -927,7 +852,7 @@ class StandardJudgeWindow(QMainWindow):
     ) -> Optional[List[Tuple[str, str, bool]]]:
         if not self.spec.show_metrics or rr is None:
             return None
-        if self.spec.score_mode == "u1_length":
+        if self.spec.score_mode == "expression_length":
             length = effective_output_length(rr.stdout)
             elapsed = getattr(rr, "elapsed_sec", None)
             best: Optional[int] = None
@@ -939,7 +864,7 @@ class StandardJudgeWindow(QMainWindow):
                 ]
                 if passed_lengths:
                     best = min(passed_lengths)
-            score = compute_u1_score(length, best) if best else None
+            score = compute_expression_length_score(length, best) if best else None
             return [
                 (self.spec.metric_labels[0], str(length), True),
                 (
@@ -1140,9 +1065,12 @@ class StandardJudgeWindow(QMainWindow):
         self.worker.sig_finished.connect(self.on_worker_finished)
         self.worker.sig_error.connect(self.on_worker_error)
 
+        self.worker.sig_finished.connect(self.worker.deleteLater)
+        self.worker.sig_error.connect(self.worker.deleteLater)
         self.worker.sig_finished.connect(self.worker_thread.quit)
         self.worker.sig_error.connect(self.worker_thread.quit)
         self.worker_thread.finished.connect(self.on_worker_thread_finished)
+        self.worker_thread.finished.connect(self.worker_thread.deleteLater)
         self.worker_thread.start()
 
     def on_stop(self) -> None:
@@ -1308,6 +1236,10 @@ class StandardJudgeWindow(QMainWindow):
     def on_worker_finished(self, msg: str) -> None:
         self.append_log(msg)
         self.lbl_run_status.setText("评测结束 ✓")
+        self.btn_start.setEnabled(True)
+        self.btn_stop.setEnabled(False)
+        if self.worker_thread is not None and self.worker_thread.isRunning():
+            self.worker_thread.quit()
         # Refresh scores for all currently visible cards
         if self.selected_case_id:
             self.show_case(self.selected_case_id)
@@ -1315,17 +1247,17 @@ class StandardJudgeWindow(QMainWindow):
     def on_worker_error(self, msg: str) -> None:
         self.append_log("错误: " + msg)
         self.lbl_run_status.setText("发生错误")
+        self.btn_start.setEnabled(True)
+        self.btn_stop.setEnabled(False)
+        if self.worker_thread is not None and self.worker_thread.isRunning():
+            self.worker_thread.quit()
         QMessageBox.critical(self, "运行错误", msg)
 
     def on_worker_thread_finished(self) -> None:
         self.btn_start.setEnabled(True)
         self.btn_stop.setEnabled(False)
-        if self.worker is not None:
-            self.worker.deleteLater()
-            self.worker = None
-        if self.worker_thread is not None:
-            self.worker_thread.deleteLater()
-            self.worker_thread = None
+        self.worker = None
+        self.worker_thread = None
 
     # Card management
 
